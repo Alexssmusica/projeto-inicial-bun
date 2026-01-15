@@ -1,8 +1,8 @@
-import { User } from '@/domain/entities/user.entity';
-import type { IUserRepository } from '@/domain/ports/user.repository.port';
 import type { CreateUserDto } from '@/application/dtos/create-user.dto';
 import type { UserResponseDto } from '@/application/dtos/user-response.dto';
 import { ConflictError } from '@/application/errors/conflict.error';
+import { User } from '@/domain/entities/user.entity';
+import type { IUserRepository } from '@/domain/ports/user.repository.port';
 
 export class CreateUserUseCase {
 	constructor(private readonly userRepository: IUserRepository) {}

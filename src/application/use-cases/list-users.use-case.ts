@@ -1,5 +1,5 @@
-import type { IUserRepository } from '@/domain/ports/user.repository.port';
 import type { UserResponseDto } from '@/application/dtos/user-response.dto';
+import type { IUserRepository } from '@/domain/ports/user.repository.port';
 
 export class ListUsersUseCase {
 	constructor(private readonly userRepository: IUserRepository) {}

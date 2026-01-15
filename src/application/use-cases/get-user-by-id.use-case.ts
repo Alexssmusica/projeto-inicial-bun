@@ -1,6 +1,6 @@
-import type { IUserRepository } from '@/domain/ports/user.repository.port';
 import type { UserResponseDto } from '@/application/dtos/user-response.dto';
 import { NotFoundError } from '@/application/errors/not-found.error';
+import type { IUserRepository } from '@/domain/ports/user.repository.port';
 
 export class GetUserByIdUseCase {
 	constructor(private readonly userRepository: IUserRepository) {}

@@ -1,5 +1,5 @@
-import type { IUserRepository } from '@/domain/ports/user.repository.port';
 import { NotFoundError } from '@/application/errors/not-found.error';
+import type { IUserRepository } from '@/domain/ports/user.repository.port';
 
 export class DeleteUserByIdUseCase {
 	constructor(private readonly userRepository: IUserRepository) {}
