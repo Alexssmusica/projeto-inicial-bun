@@ -1,4 +1,4 @@
-import { setupDatabase } from './setup';
+import { setupDatabase } from './db.util';
 
 async function main() {
 	try {

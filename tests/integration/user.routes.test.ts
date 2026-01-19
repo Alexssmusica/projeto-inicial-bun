@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from 'bun:test';
 import { Elysia } from 'elysia';
-import { db } from '@/infrastructure/database/drizzle/db';
+import { client } from '@/infrastructure/database/drizzle/client';
 import { users } from '@/infrastructure/database/drizzle/schema';
 import { handleError } from '@/presentation/http/middlewares/error-handler.middleware';
 import { userRoutes } from '@/presentation/http/routes/user.routes';
@@ -13,12 +13,12 @@ describe('User Routes Integration', () => {
 	}
 
 	beforeEach(async () => {
-		await db.delete(users);
+		await client.delete(users);
 		app = createApp();
 	});
 
 	afterEach(async () => {
-		await db.delete(users);
+		await client.delete(users);
 	});
 
 	describe('POST /users', () => {

@@ -1,12 +1,12 @@
 import { eq } from 'drizzle-orm';
 import { User } from '@/domain/entities/user.entity';
 import type { IUserRepository } from '@/domain/ports/user.repository.port';
-import { db } from '@/infrastructure/database/drizzle/db';
+import { client } from '@/infrastructure/database/drizzle/client';
 import { users } from '@/infrastructure/database/drizzle/schema';
 
 export class DrizzleUserRepository implements IUserRepository {
 	async create(user: User): Promise<User> {
-		const [createdUser] = await db
+		const [createdUser] = await client
 			.insert(users)
 			.values({
 				id: user.id,
@@ -20,7 +20,7 @@ export class DrizzleUserRepository implements IUserRepository {
 	}
 
 	async findById(id: string): Promise<User | null> {
-		const [foundUser] = await db.select().from(users).where(eq(users.id, id)).limit(1);
+		const [foundUser] = await client.select().from(users).where(eq(users.id, id)).limit(1);
 
 		if (!foundUser) {
 			return null;
@@ -30,7 +30,11 @@ export class DrizzleUserRepository implements IUserRepository {
 	}
 
 	async findByEmail(email: string): Promise<User | null> {
-		const [foundUser] = await db.select().from(users).where(eq(users.email, email)).limit(1);
+		const [foundUser] = await client
+			.select()
+			.from(users)
+			.where(eq(users.email, email))
+			.limit(1);
 
 		if (!foundUser) {
 			return null;
@@ -40,12 +44,12 @@ export class DrizzleUserRepository implements IUserRepository {
 	}
 
 	async findAll(): Promise<User[]> {
-		const allUsers = await db.select().from(users);
+		const allUsers = await client.select().from(users);
 		return allUsers.map((user) => this.toDomainEntity(user));
 	}
 
 	async delete(id: string): Promise<void> {
-		await db.delete(users).where(eq(users.id, id));
+		await client.delete(users).where(eq(users.id, id));
 	}
 
 	private toDomainEntity(dbUser: typeof users.$inferSelect): User {

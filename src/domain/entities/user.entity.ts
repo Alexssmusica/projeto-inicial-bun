@@ -1,4 +1,4 @@
-import { v7 as uuid } from 'uuid';
+import { randomUUIDv7 } from 'bun';
 
 export class User {
 	constructor(
@@ -9,6 +9,6 @@ export class User {
 	) {}
 
 	static create(name: string, email: string): User {
-		return new User(uuid(), name.trim(), email.trim().toLowerCase(), new Date());
+		return new User(randomUUIDv7(), name.trim(), email.trim().toLowerCase(), new Date());
 	}
 }

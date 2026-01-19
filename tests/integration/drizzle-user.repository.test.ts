@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'bun:test';
 import { eq } from 'drizzle-orm';
 import { User } from '@/domain/entities/user.entity';
 import { DrizzleUserRepository } from '@/infrastructure/database/adapters/drizzle-user.repository';
-import { db } from '@/infrastructure/database/drizzle/db';
+import { client } from '@/infrastructure/database/drizzle/client';
 import { users } from '@/infrastructure/database/drizzle/schema';
 
 describe('DrizzleUserRepository Integration', () => {
@@ -10,11 +10,11 @@ describe('DrizzleUserRepository Integration', () => {
 
 	beforeEach(async () => {
 		repository = new DrizzleUserRepository();
-		await db.delete(users);
+		await client.delete(users);
 	});
 
 	afterEach(async () => {
-		await db.delete(users);
+		await client.delete(users);
 	});
 
 	describe('create', () => {
@@ -25,7 +25,7 @@ describe('DrizzleUserRepository Integration', () => {
 			expect(createdUser.id).toBe(user.id);
 			expect(createdUser.name).toBe('John Doe');
 			expect(createdUser.email).toBe('john@example.com');
-			const [dbUser] = await db.select().from(users).where(eq(users.id, user.id));
+			const [dbUser] = await client.select().from(users).where(eq(users.id, user.id));
 			expect(dbUser).toBeDefined();
 			expect(dbUser.name).toBe('John Doe');
 			expect(dbUser.email).toBe('john@example.com');
@@ -94,7 +94,7 @@ describe('DrizzleUserRepository Integration', () => {
 			await repository.delete(user.id);
 			const foundUser = await repository.findById(user.id);
 			expect(foundUser).toBeNull();
-			const [dbUser] = await db.select().from(users).where(eq(users.id, user.id));
+			const [dbUser] = await client.select().from(users).where(eq(users.id, user.id));
 			expect(dbUser).toBeUndefined();
 		});
 
