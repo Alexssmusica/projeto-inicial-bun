@@ -3,6 +3,7 @@ import { User } from '@/domain/entities/user.entity';
 import type { IUserRepository } from '@/domain/ports/user.repository.port';
 import { client } from '@/infrastructure/database/drizzle/client';
 import { users } from '@/infrastructure/database/drizzle/schema';
+import { UpdateUserDto } from '@/application/dtos/update-user.dto';
 
 export class DrizzleUserRepository implements IUserRepository {
 	async create(user: User): Promise<User> {
@@ -40,6 +41,13 @@ export class DrizzleUserRepository implements IUserRepository {
 	async findAll(): Promise<User[]> {
 		const allUsers = await client.query.users.findMany();
 		return allUsers.map((user) => this.toDomainEntity(user));
+	}
+
+	async update(id: string, data: UpdateUserDto): Promise<User> {
+		const [updatedUser] = await client.transaction(async (client) => {
+			return client.update(users).set(data).where(eq(users.id, id)).returning();
+		});
+		return this.toDomainEntity(updatedUser);
 	}
 
 	async delete(id: string): Promise<void> {

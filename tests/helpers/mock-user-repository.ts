@@ -1,4 +1,5 @@
-import type { User } from '@/domain/entities/user.entity';
+import type { UpdateUserDto } from '@/application/dtos/update-user.dto';
+import { User } from '@/domain/entities/user.entity';
 import type { IUserRepository } from '@/domain/ports/user.repository.port';
 
 export class MockUserRepository implements IUserRepository {
@@ -24,6 +25,21 @@ export class MockUserRepository implements IUserRepository {
 
 	async findAll(): Promise<User[]> {
 		return Array.from(this.users.values());
+	}
+
+	async update(id: string, data: UpdateUserDto): Promise<User> {
+		const user = this.users.get(id);
+		if (!user) {
+			throw new Error('User not found');
+		}
+		const updatedUser = new User(
+			user.id,
+			data.name !== undefined ? data.name : user.name,
+			data.email !== undefined ? data.email : user.email,
+			user.createdAt,
+		);
+		this.users.set(id, updatedUser);
+		return updatedUser;
 	}
 
 	async delete(id: string): Promise<void> {

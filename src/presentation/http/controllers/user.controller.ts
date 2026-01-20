@@ -1,14 +1,17 @@
 import type { CreateUserDto } from '@/application/dtos/create-user.dto';
+import type { UpdateUserDto } from '@/application/dtos/update-user.dto';
 import type { CreateUserUseCase } from '@/application/use-cases/create-user.use-case';
 import type { DeleteUserByIdUseCase } from '@/application/use-cases/delete-user-by-id.use-case';
 import type { GetUserByIdUseCase } from '@/application/use-cases/get-user-by-id.use-case';
 import type { ListUsersUseCase } from '@/application/use-cases/list-users.use-case';
+import type { UpdateUserUseCase } from '@/application/use-cases/update-user.use-case';
 
 export class UserController {
 	constructor(
 		private readonly createUserUseCase: CreateUserUseCase,
 		private readonly listUsersUseCase: ListUsersUseCase,
 		private readonly getUserByIdUseCase: GetUserByIdUseCase,
+		private readonly updateUserUseCase: UpdateUserUseCase,
 		private readonly deleteUserByIdUseCase: DeleteUserByIdUseCase,
 	) {}
 
@@ -30,6 +33,14 @@ export class UserController {
 
 	async getUserById(id: string) {
 		const result = await this.getUserByIdUseCase.execute(id);
+		return {
+			status: 200,
+			body: result,
+		};
+	}
+
+	async updateUser(id: string, body: UpdateUserDto) {
+		const result = await this.updateUserUseCase.execute(id, body);
 		return {
 			status: 200,
 			body: result,

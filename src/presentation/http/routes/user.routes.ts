@@ -4,6 +4,7 @@ import { CreateUserUseCase } from '@/application/use-cases/create-user.use-case'
 import { DeleteUserByIdUseCase } from '@/application/use-cases/delete-user-by-id.use-case';
 import { GetUserByIdUseCase } from '@/application/use-cases/get-user-by-id.use-case';
 import { ListUsersUseCase } from '@/application/use-cases/list-users.use-case';
+import { UpdateUserUseCase } from '@/application/use-cases/update-user.use-case';
 import { DrizzleUserRepository } from '@/infrastructure/database/adapters/drizzle-user.repository';
 import { UserController } from '@/presentation/http/controllers/user.controller';
 
@@ -11,11 +12,13 @@ const userRepository = new DrizzleUserRepository();
 const createUserUseCase = new CreateUserUseCase(userRepository);
 const listUsersUseCase = new ListUsersUseCase(userRepository);
 const getUserByIdUseCase = new GetUserByIdUseCase(userRepository);
+const updateUserUseCase = new UpdateUserUseCase(userRepository);
 const deleteUserByIdUseCase = new DeleteUserByIdUseCase(userRepository);
 const userController = new UserController(
 	createUserUseCase,
 	listUsersUseCase,
 	getUserByIdUseCase,
+	updateUserUseCase,
 	deleteUserByIdUseCase,
 );
 
@@ -76,6 +79,28 @@ export const userRoutes = new Elysia({ prefix: '/users' })
 			}),
 			response: {
 				201: userResponseSchema,
+				409: errorResponseSchema,
+			},
+		},
+	)
+	.put(
+		'/:id',
+		async ({ set, params, body }) => {
+			const result = await userController.updateUser(params.id, body);
+			set.status = result.status;
+			return result.body;
+		},
+		{
+			params: z.object({
+				id: z.uuid(),
+			}),
+			body: z.object({
+				name: z.string().trim().min(3).optional(),
+				email: z.email().trim().toLowerCase().optional(),
+			}),
+			response: {
+				200: userResponseSchema,
+				404: errorResponseSchema,
 				409: errorResponseSchema,
 			},
 		},

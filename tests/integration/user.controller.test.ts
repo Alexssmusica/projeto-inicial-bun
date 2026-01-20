@@ -3,6 +3,7 @@ import { CreateUserUseCase } from '@/application/use-cases/create-user.use-case'
 import { DeleteUserByIdUseCase } from '@/application/use-cases/delete-user-by-id.use-case';
 import { GetUserByIdUseCase } from '@/application/use-cases/get-user-by-id.use-case';
 import { ListUsersUseCase } from '@/application/use-cases/list-users.use-case';
+import { UpdateUserUseCase } from '@/application/use-cases/update-user.use-case';
 import { UserController } from '@/presentation/http/controllers/user.controller';
 import { MockUserRepository } from '../helpers/mock-user-repository';
 import { createMockUser } from '../helpers/test-utils';
@@ -16,12 +17,14 @@ describe('UserController Integration', () => {
 		const createUserUseCase = new CreateUserUseCase(mockRepository);
 		const listUsersUseCase = new ListUsersUseCase(mockRepository);
 		const getUserByIdUseCase = new GetUserByIdUseCase(mockRepository);
+		const updateUserUseCase = new UpdateUserUseCase(mockRepository);
 		const deleteUserByIdUseCase = new DeleteUserByIdUseCase(mockRepository);
 
 		controller = new UserController(
 			createUserUseCase,
 			listUsersUseCase,
 			getUserByIdUseCase,
+			updateUserUseCase,
 			deleteUserByIdUseCase,
 		);
 	});
