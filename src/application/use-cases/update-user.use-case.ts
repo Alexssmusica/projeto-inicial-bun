@@ -2,6 +2,7 @@ import type { UpdateUserDto } from '@/application/dtos/update-user.dto';
 import type { UserResponseDto } from '@/application/dtos/user-response.dto';
 import { ConflictError } from '@/application/errors/conflict.error';
 import { NotFoundError } from '@/application/errors/not-found.error';
+import { formatDate } from '@/application/utils/date-formatter';
 import type { IUserRepository } from '@/domain/ports/user.repository.port';
 
 export class UpdateUserUseCase {
@@ -23,7 +24,7 @@ export class UpdateUserUseCase {
 			id: updatedUser.id,
 			name: updatedUser.name,
 			email: updatedUser.email,
-			createdAt: updatedUser.createdAt.toISOString(),
+			createdAt: formatDate(updatedUser.createdAt),
 		};
 	}
 }

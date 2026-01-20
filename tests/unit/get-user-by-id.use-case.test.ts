@@ -33,10 +33,10 @@ describe('GetUserByIdUseCase', () => {
 		expect(useCase.execute(nonExistentId)).rejects.toThrow('User not found');
 	});
 
-	it('should return createdAt as ISO string', async () => {
+	it('should return createdAt in ISO format with timezone', async () => {
 		const user = createMockUser();
 		await mockRepository.create(user);
 		const result = await useCase.execute(user.id);
-		expect(result.createdAt).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
+		expect(result.createdAt).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[+-]\d{2}:\d{2}$/);
 	});
 });

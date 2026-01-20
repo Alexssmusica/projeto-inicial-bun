@@ -6,7 +6,7 @@ import { appSchema } from './app';
 	id: uuid('id').primaryKey().$defaultFn(() => randomUUIDv7()),
 	name: text('name').notNull(),
 	email: text('email').notNull().unique(),
-	createdAt: timestamp('created_at').notNull().defaultNow(),
+	createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
 export { users };

@@ -104,11 +104,11 @@ describe('UpdateUserUseCase', () => {
 		expect(result.email).toBe('john@example.com');
 	});
 
-	it('should return createdAt as ISO string', async () => {
+	it('should return createdAt in ISO format with timezone', async () => {
 		const user = createMockUser();
 		await mockRepository.create(user);
 		const result = await useCase.execute(user.id, { name: 'Updated Name' });
-		expect(result.createdAt).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
+		expect(result.createdAt).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[+-]\d{2}:\d{2}$/);
 	});
 
 	it('should update user in repository', async () => {

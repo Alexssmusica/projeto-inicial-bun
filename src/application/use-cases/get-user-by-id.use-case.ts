@@ -1,5 +1,6 @@
 import type { UserResponseDto } from '@/application/dtos/user-response.dto';
 import { NotFoundError } from '@/application/errors/not-found.error';
+import { formatDate } from '@/application/utils/date-formatter';
 import type { IUserRepository } from '@/domain/ports/user.repository.port';
 
 export class GetUserByIdUseCase {
@@ -14,7 +15,7 @@ export class GetUserByIdUseCase {
 			id: user.id,
 			name: user.name,
 			email: user.email,
-			createdAt: user.createdAt.toISOString(),
+			createdAt: formatDate(user.createdAt),
 		};
 	}
 }
