@@ -13,12 +13,7 @@ function getPostgresConnectionUrl(databaseUrl: string): string {
 }
 
 export async function setupDatabase(): Promise<void> {
-	const url = Bun.env.DATABASE_URL;
-	if (!url) {
-		throw new Error(
-			'DATABASE_URL não está definida. Configure a variável de ambiente DATABASE_URL.',
-		);
-	}
+	const url = getDatabaseUrl()
 	const dbName = extractDatabaseName(url);
 	const postgresUrl = getPostgresConnectionUrl(url);
 	const client = new Client({
@@ -34,3 +29,17 @@ export async function setupDatabase(): Promise<void> {
 		await client.end();
 	}
 }
+
+export function getDatabaseUrl(): string {
+	const databaseUrl = IS_TEST ? Bun.env.DATABASE_TEST_URL : Bun.env.DATABASE_URL;
+	if(!databaseUrl) {
+		throw new Error(
+			IS_TEST
+				? 'DATABASE_TEST_URL não está definida para testes'
+				: 'DATABASE_URL não está definida'
+		);
+	}
+	return databaseUrl;
+}
+
+export const IS_TEST = Bun.env.NODE_ENV === 'test'

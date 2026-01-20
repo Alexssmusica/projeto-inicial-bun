@@ -1,11 +1,12 @@
 import { defineConfig } from 'drizzle-kit';
+import { getDatabaseUrl } from './src/infrastructure/database/setup/db.util';
 
 export default defineConfig({
 	schema: './src/infrastructure/database/drizzle/schema/*',
 	out: './drizzle',
 	dialect: 'postgresql',
 	dbCredentials: {
-		url: Bun.env.DATABASE_URL!,
+		url: getDatabaseUrl(),
 	},
 	schemaFilter: ['app'],
 });

@@ -2,10 +2,10 @@
 	"name": "app",
 	"version": "1.0.50",
 	"scripts": {
-		"test": "bun test",
+		"test": "cross-env NODE_ENV=test bun run db:push && bun test",
 		"test:unit": "bun test tests/unit",
-		"test:integration": "bun test tests/integration",
-		"test:watch": "bun test --watch",
+		"test:integration": "cross-env NODE_ENV=test bun run db:push && bun test tests/integration",
+		"test:watch": "cross-env NODE_ENV=test bun run db:push && bun test --watch",
 		"dev": "bun run --watch src/presentation/index.ts",
 		"db:setup": "bun run src/infrastructure/database/setup/index.ts",
 		"db:push": "bun run db:setup && bun run --bun drizzle-kit push",
@@ -29,6 +29,7 @@
 		"@biomejs/biome": "^2.3.11",
 		"@types/pg": "^8.16.0",
 		"bun-types": "^1.3.6",
+		"cross-env": "^10.1.0",
 		"drizzle-kit": "^0.31.8"
 	},
 	"module": "src/presentation/index.js"

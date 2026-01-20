@@ -68,8 +68,16 @@ Os testes de integração testam a interação entre componentes:
 
 Os testes de integração requerem:
 - Banco de dados PostgreSQL configurado
-- Variável de ambiente `DATABASE_URL` definida
+- Variável de ambiente `DATABASE_TEST_URL` definida (recomendado) ou `DATABASE_URL` como fallback
 - O banco será limpo antes e depois de cada teste
+
+**⚠️ Importante**: Para evitar usar o banco de produção, configure `DATABASE_TEST_URL` com um banco de dados separado para testes.
+
+Exemplo no `.env`:
+```env
+DATABASE_URL=postgresql://user:password@localhost:5432/production_db
+DATABASE_TEST_URL=postgresql://user:password@localhost:5432/test_db
+```
 
 ## Helpers
 
