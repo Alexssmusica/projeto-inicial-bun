@@ -17,6 +17,4 @@ export class UserMapper {
             createdAt: formatDate(user.createdAt),
         };
     }
-
-
 }
