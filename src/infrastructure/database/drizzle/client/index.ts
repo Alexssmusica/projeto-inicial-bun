@@ -1,6 +1,6 @@
 import { drizzle } from 'drizzle-orm/bun-sql';
-import { schema } from '../schema';
 import { getDatabaseUrl, IS_TEST } from '../../setup/db.util';
+import { schema } from '../schema';
 
 export const client = drizzle(getDatabaseUrl(), { 
 	schema, 

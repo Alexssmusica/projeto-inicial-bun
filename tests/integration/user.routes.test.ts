@@ -1,9 +1,9 @@
-import { afterEach, beforeEach, describe, expect, it } from 'bun:test';
-import { Elysia } from 'elysia';
 import { client } from '@/infrastructure/database/drizzle/client';
 import { users } from '@/infrastructure/database/drizzle/schema';
 import { handleError } from '@/presentation/http/middlewares/error-handler.middleware';
 import { userRoutes } from '@/presentation/http/routes/user.routes';
+import { afterEach, beforeEach, describe, expect, it } from 'bun:test';
+import { Elysia } from 'elysia';
 
 describe('User Routes Integration', () => {
 	let app: ReturnType<typeof createApp>;

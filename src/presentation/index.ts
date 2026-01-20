@@ -1,8 +1,8 @@
+import { handleError } from '@/presentation/http/middlewares/error-handler.middleware';
+import { userRoutes } from '@/presentation/http/routes/user.routes';
 import openapi from '@elysiajs/openapi';
 import { Elysia } from 'elysia';
 import { z } from 'zod';
-import { handleError } from '@/presentation/http/middlewares/error-handler.middleware';
-import { userRoutes } from '@/presentation/http/routes/user.routes';
 
 const app = new Elysia()
 	.get('/', () => {

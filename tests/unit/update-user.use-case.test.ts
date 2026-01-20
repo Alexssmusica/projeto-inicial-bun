@@ -1,14 +1,14 @@
-import { beforeEach, describe, expect, it } from 'bun:test';
 import { ConflictError } from '@/application/errors/conflict.error';
 import { NotFoundError } from '@/application/errors/not-found.error';
 import { UpdateUserUseCase } from '@/application/use-cases/update-user.use-case';
+import { beforeEach, describe, expect, it } from 'bun:test';
 import { MockUserRepository } from '../helpers/mock-user-repository';
 import { createMockUser } from '../helpers/test-utils';
 
 describe('UpdateUserUseCase', () => {
 	let useCase: UpdateUserUseCase;
 	let mockRepository: MockUserRepository;
-	
+
 	beforeEach(() => {
 		mockRepository = new MockUserRepository();
 		useCase = new UpdateUserUseCase(mockRepository);
@@ -64,9 +64,7 @@ describe('UpdateUserUseCase', () => {
 
 	it('should throw NotFoundError when user does not exist', async () => {
 		const nonExistentId = 'non-existent-id';
-		expect(useCase.execute(nonExistentId, { name: 'New Name' })).rejects.toThrow(
-			NotFoundError,
-		);
+		expect(useCase.execute(nonExistentId, { name: 'New Name' })).rejects.toThrow(NotFoundError);
 		expect(useCase.execute(nonExistentId, { name: 'New Name' })).rejects.toThrow(
 			'User not found',
 		);
@@ -108,7 +106,9 @@ describe('UpdateUserUseCase', () => {
 		const user = createMockUser();
 		await mockRepository.create(user);
 		const result = await useCase.execute(user.id, { name: 'Updated Name' });
-		expect(result.createdAt).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[+-]\d{2}:\d{2}$/);
+		expect(result.createdAt).toMatch(
+			/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[+-]\d{2}:\d{2}$/,
+		);
 	});
 
 	it('should update user in repository', async () => {

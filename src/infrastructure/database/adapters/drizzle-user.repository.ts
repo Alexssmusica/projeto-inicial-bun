@@ -1,20 +1,23 @@
-import { eq } from 'drizzle-orm';
-import { User } from '@/domain/entities/user.entity';
+import type { UpdateUserDto } from '@/application/dtos/update-user.dto';
+import type { User } from '@/domain/entities/user.entity';
 import type { IUserRepository } from '@/domain/ports/user.repository.port';
 import { client } from '@/infrastructure/database/drizzle/client';
 import { users } from '@/infrastructure/database/drizzle/schema';
-import { UpdateUserDto } from '@/application/dtos/update-user.dto';
+import { eq } from 'drizzle-orm';
 import { UserMapper } from '../mappers/user.mapper';
 
 export class DrizzleUserRepository implements IUserRepository {
 	async create(user: User): Promise<User> {
 		const [createdUser] = await client.transaction(async (client) => {
-			return client.insert(users).values({
-				id: user.id,
-				name: user.name,
-				email: user.email,
-				createdAt: user.createdAt,
-			}).returning();
+			return client
+				.insert(users)
+				.values({
+					id: user.id,
+					name: user.name,
+					email: user.email,
+					createdAt: user.createdAt,
+				})
+				.returning();
 		});
 		return UserMapper.toDomainEntity(createdUser);
 	}
@@ -54,5 +57,4 @@ export class DrizzleUserRepository implements IUserRepository {
 	async delete(id: string): Promise<void> {
 		await client.delete(users).where(eq(users.id, id));
 	}
-
 }

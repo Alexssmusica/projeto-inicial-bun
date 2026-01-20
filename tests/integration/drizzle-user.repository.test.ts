@@ -1,9 +1,9 @@
-import { afterEach, beforeEach, describe, expect, it } from 'bun:test';
-import { eq } from 'drizzle-orm';
 import { User } from '@/domain/entities/user.entity';
 import { DrizzleUserRepository } from '@/infrastructure/database/adapters/drizzle-user.repository';
 import { client } from '@/infrastructure/database/drizzle/client';
 import { users } from '@/infrastructure/database/drizzle/schema';
+import { afterEach, beforeEach, describe, expect, it } from 'bun:test';
+import { eq } from 'drizzle-orm';
 
 describe('DrizzleUserRepository Integration', () => {
 	let repository: DrizzleUserRepository;

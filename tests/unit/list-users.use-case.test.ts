@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it } from 'bun:test';
 import { ListUsersUseCase } from '@/application/use-cases/list-users.use-case';
+import { beforeEach, describe, expect, it } from 'bun:test';
 import { MockUserRepository } from '../helpers/mock-user-repository';
 import { createMockUser } from '../helpers/test-utils';
 
@@ -48,6 +48,8 @@ describe('ListUsersUseCase', () => {
 		const user = createMockUser();
 		await mockRepository.create(user);
 		const result = await useCase.execute();
-		expect(result[0].createdAt).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[+-]\d{2}:\d{2}$/);
+		expect(result[0].createdAt).toMatch(
+			/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[+-]\d{2}:\d{2}$/,
+		);
 	});
 });

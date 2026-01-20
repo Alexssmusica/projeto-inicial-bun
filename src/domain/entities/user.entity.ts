@@ -1,5 +1,4 @@
 import { randomUUIDv7 } from 'bun';
-
 export class User {
 	constructor(
 		public readonly id: string,

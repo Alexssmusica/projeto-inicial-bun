@@ -1,6 +1,6 @@
-import { beforeEach, describe, expect, it } from 'bun:test';
 import { ConflictError } from '@/application/errors/conflict.error';
 import { CreateUserUseCase } from '@/application/use-cases/create-user.use-case';
+import { beforeEach, describe, expect, it } from 'bun:test';
 import { MockUserRepository } from '../helpers/mock-user-repository';
 import { createMockUser } from '../helpers/test-utils';
 
@@ -59,6 +59,8 @@ describe('CreateUserUseCase', () => {
 			email: 'john@example.com',
 		};
 		const result = await useCase.execute(input);
-		expect(result.createdAt).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[+-]\d{2}:\d{2}$/);
+		expect(result.createdAt).toMatch(
+			/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[+-]\d{2}:\d{2}$/,
+		);
 	});
 });

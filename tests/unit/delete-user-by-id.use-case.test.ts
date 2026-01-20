@@ -1,6 +1,6 @@
-import { beforeEach, describe, expect, it } from 'bun:test';
 import { NotFoundError } from '@/application/errors/not-found.error';
 import { DeleteUserByIdUseCase } from '@/application/use-cases/delete-user-by-id.use-case';
+import { beforeEach, describe, expect, it } from 'bun:test';
 import { MockUserRepository } from '../helpers/mock-user-repository';
 import { createMockUser } from '../helpers/test-utils';
 

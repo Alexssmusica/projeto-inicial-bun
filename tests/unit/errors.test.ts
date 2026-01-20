@@ -1,9 +1,9 @@
-import { describe, expect, it } from 'bun:test';
 import { BadRequestError } from '@/application/errors/bad-request.error';
 import { BaseApplicationError } from '@/application/errors/base-application.error';
 import { ConflictError } from '@/application/errors/conflict.error';
 import { NotFoundError } from '@/application/errors/not-found.error';
 import { ValidationError } from '@/application/errors/validation.error';
+import { describe, expect, it } from 'bun:test';
 
 describe('Application Errors', () => {
 	describe('BaseApplicationError', () => {

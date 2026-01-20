@@ -1,6 +1,6 @@
-import { beforeEach, describe, expect, it } from 'bun:test';
 import { NotFoundError } from '@/application/errors/not-found.error';
 import { GetUserByIdUseCase } from '@/application/use-cases/get-user-by-id.use-case';
+import { beforeEach, describe, expect, it } from 'bun:test';
 import { MockUserRepository } from '../helpers/mock-user-repository';
 import { createMockUser } from '../helpers/test-utils';
 
@@ -37,6 +37,8 @@ describe('GetUserByIdUseCase', () => {
 		const user = createMockUser();
 		await mockRepository.create(user);
 		const result = await useCase.execute(user.id);
-		expect(result.createdAt).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[+-]\d{2}:\d{2}$/);
+		expect(result.createdAt).toMatch(
+			/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[+-]\d{2}:\d{2}$/,
+		);
 	});
 });

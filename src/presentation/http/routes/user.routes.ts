@@ -1,5 +1,3 @@
-import { Elysia } from 'elysia';
-import { z } from 'zod';
 import { CreateUserUseCase } from '@/application/use-cases/create-user.use-case';
 import { DeleteUserByIdUseCase } from '@/application/use-cases/delete-user-by-id.use-case';
 import { GetUserByIdUseCase } from '@/application/use-cases/get-user-by-id.use-case';
@@ -7,6 +5,8 @@ import { ListUsersUseCase } from '@/application/use-cases/list-users.use-case';
 import { UpdateUserUseCase } from '@/application/use-cases/update-user.use-case';
 import { DrizzleUserRepository } from '@/infrastructure/database/adapters/drizzle-user.repository';
 import { UserController } from '@/presentation/http/controllers/user.controller';
+import { Elysia } from 'elysia';
+import { z } from 'zod';
 
 const userRepository = new DrizzleUserRepository();
 const createUserUseCase = new CreateUserUseCase(userRepository);

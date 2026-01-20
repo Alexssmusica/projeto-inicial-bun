@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'bun:test';
 import { User } from '@/domain/entities/user.entity';
+import { describe, expect, it } from 'bun:test';
 
 describe('User Entity', () => {
 	it('should create a user with valid data', () => {
