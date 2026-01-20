@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment from 'moment';
 
 const TIMEZONE = '-03:00';
 export function formatDate(date: Date): string {
