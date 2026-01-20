@@ -2,7 +2,7 @@ import type { UpdateUserDto } from '@/application/dtos/update-user.dto';
 import type { UserResponseDto } from '@/application/dtos/user-response.dto';
 import { ConflictError } from '@/application/errors/conflict.error';
 import { NotFoundError } from '@/application/errors/not-found.error';
-import { formatDate } from '@/application/utils/date-formatter';
+import { UserMapper } from '@/infrastructure/database/mappers/user.mapper';
 import type { IUserRepository } from '@/domain/ports/user.repository.port';
 
 export class UpdateUserUseCase {
@@ -20,11 +20,6 @@ export class UpdateUserUseCase {
 			}
 		}
 		const updatedUser = await this.userRepository.update(id, input);
-		return {
-			id: updatedUser.id,
-			name: updatedUser.name,
-			email: updatedUser.email,
-			createdAt: formatDate(updatedUser.createdAt),
-		};
+		return UserMapper.toResponseDto(updatedUser);
 	}
 }

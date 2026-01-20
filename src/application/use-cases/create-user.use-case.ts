@@ -1,9 +1,9 @@
 import type { CreateUserDto } from '@/application/dtos/create-user.dto';
 import type { UserResponseDto } from '@/application/dtos/user-response.dto';
 import { ConflictError } from '@/application/errors/conflict.error';
-import { formatDate } from '@/application/utils/date-formatter';
 import { User } from '@/domain/entities/user.entity';
 import type { IUserRepository } from '@/domain/ports/user.repository.port';
+import { UserMapper } from '@/infrastructure/database/mappers/user.mapper';
 
 export class CreateUserUseCase {
 	constructor(private readonly userRepository: IUserRepository) {}
@@ -15,11 +15,6 @@ export class CreateUserUseCase {
 		}
 		const user = User.create(input.name, input.email);
 		const savedUser = await this.userRepository.create(user);
-		return {
-			id: savedUser.id,
-			name: savedUser.name,
-			email: savedUser.email,
-			createdAt: formatDate(savedUser.createdAt),
-		};
+		return UserMapper.toResponseDto(savedUser);
 	}
 }
