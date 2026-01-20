@@ -6,45 +6,39 @@ import { users } from '@/infrastructure/database/drizzle/schema';
 
 export class DrizzleUserRepository implements IUserRepository {
 	async create(user: User): Promise<User> {
-		const [createdUser] = await client
-			.insert(users)
-			.values({
+		const [createdUser] = await client.transaction(async (client) => {
+			return client.insert(users).values({
 				id: user.id,
 				name: user.name,
 				email: user.email,
 				createdAt: user.createdAt,
-			})
-			.returning();
-
+			}).returning();
+		});
 		return this.toDomainEntity(createdUser);
 	}
 
 	async findById(id: string): Promise<User | null> {
-		const [foundUser] = await client.select().from(users).where(eq(users.id, id)).limit(1);
-
+		const foundUser = await client.query.users.findFirst({
+			where: eq(users.id, id),
+		});
 		if (!foundUser) {
 			return null;
 		}
-
 		return this.toDomainEntity(foundUser);
 	}
 
 	async findByEmail(email: string): Promise<User | null> {
-		const [foundUser] = await client
-			.select()
-			.from(users)
-			.where(eq(users.email, email))
-			.limit(1);
-
+		const foundUser = await client.query.users.findFirst({
+			where: eq(users.email, email),
+		});
 		if (!foundUser) {
 			return null;
 		}
-
 		return this.toDomainEntity(foundUser);
 	}
 
 	async findAll(): Promise<User[]> {
-		const allUsers = await client.select().from(users);
+		const allUsers = await client.query.users.findMany();
 		return allUsers.map((user) => this.toDomainEntity(user));
 	}
 
