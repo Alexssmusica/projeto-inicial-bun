@@ -1,4 +1,8 @@
-import { Client } from 'pg';
+import { logger } from '@/application/logs/logger';
+import { env } from '@/application/utils/env';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { migrate } from 'drizzle-orm/node-postgres/migrator';
+import { Client, Pool } from 'pg';
 
 function extractDatabaseName(url: string): string {
 	const urlObj = new URL(url);
@@ -30,8 +34,19 @@ export async function setupDatabase(): Promise<void> {
 	}
 }
 
+export async function runMigrations(): Promise<void> {
+	logger.info('Running migrations...');
+	await setupDatabase();
+	const url = getDatabaseUrl();
+	const pool = new Pool({ connectionString: url });
+	const db = drizzle(pool);
+	await migrate(db, { migrationsFolder: './drizzle' });
+	await pool.end();
+	logger.info('Migrations executed successfully');
+}
+
 export function getDatabaseUrl(): string {
-	const databaseUrl = IS_TEST ? Bun.env.DATABASE_TEST_URL : Bun.env.DATABASE_URL;
+	const databaseUrl = IS_TEST ? env.DATABASE_TEST_URL : env.DATABASE_URL;
 	if (!databaseUrl) {
 		throw new Error(
 			IS_TEST
@@ -42,4 +57,5 @@ export function getDatabaseUrl(): string {
 	return databaseUrl;
 }
 
-export const IS_TEST = Bun.env.NODE_ENV === 'test';
+export const IS_TEST = env.NODE_ENV === 'test';
+export const IS_DEVELOPMENT = env.NODE_ENV === 'development';

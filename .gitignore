@@ -8,7 +8,7 @@
 .env
 # testing
 /coverage
-
+*bun-build
 # next.js
 /.next/
 /out/
