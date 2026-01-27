@@ -7,6 +7,8 @@ import { DrizzleUserRepository } from '@/infrastructure/database/adapters/drizzl
 import { UserController } from '@/presentation/http/controllers/user.controller';
 import { Elysia } from 'elysia';
 import { z } from 'zod';
+import { errorResponseSchema, validationErrorResponseSchema } from '../util/errors-response.schema';
+import { userResponseSchema } from '../util/response.schema';
 
 const userRepository = new DrizzleUserRepository();
 const createUserUseCase = new CreateUserUseCase(userRepository);
@@ -21,18 +23,6 @@ const userController = new UserController(
 	updateUserUseCase,
 	deleteUserByIdUseCase,
 );
-
-const userResponseSchema = z.object({
-	id: z.string(),
-	name: z.string(),
-	email: z.string(),
-	createdAt: z.string(),
-});
-
-const errorResponseSchema = z.object({
-	error: z.string(),
-	code: z.string().optional(),
-});
 
 export const userRoutes = new Elysia({ prefix: '/users' })
 	.get(
@@ -62,6 +52,7 @@ export const userRoutes = new Elysia({ prefix: '/users' })
 			response: {
 				200: userResponseSchema,
 				404: errorResponseSchema,
+				400: validationErrorResponseSchema,
 			},
 		},
 	)
@@ -80,6 +71,7 @@ export const userRoutes = new Elysia({ prefix: '/users' })
 			response: {
 				201: userResponseSchema,
 				409: errorResponseSchema,
+				400: validationErrorResponseSchema,
 			},
 		},
 	)
@@ -102,6 +94,7 @@ export const userRoutes = new Elysia({ prefix: '/users' })
 				200: userResponseSchema,
 				404: errorResponseSchema,
 				409: errorResponseSchema,
+				400: validationErrorResponseSchema,
 			},
 		},
 	)
@@ -121,6 +114,7 @@ export const userRoutes = new Elysia({ prefix: '/users' })
 			}),
 			response: {
 				404: errorResponseSchema,
+				400: validationErrorResponseSchema,
 			},
 		},
 	);

@@ -1,60 +1,23 @@
 import { BaseApplicationError } from '@/application/errors/base-application.error';
-import type { ValidationError } from '@/application/errors/validation.error';
+import { ValidationError as ElysiaValidationError } from 'elysia';
+import z, { ZodError } from 'zod';
 
-type UnknownRecord = Record<string, unknown>;
-
-function parseErrorIfString(error: unknown): unknown {
-	if (typeof error !== 'string') return error;
-	try {
-		return JSON.parse(error);
-	} catch {
-		return error;
-	}
-}
-
-function normalizeError(error: unknown): unknown {
-	if (error instanceof Error) {
-		return parseErrorIfString(error.message);
-	}
-	return parseErrorIfString(error);
-}
-
-function isObject(value: unknown): value is UnknownRecord {
-	return typeof value === 'object' && value !== null;
-}
-
-function isElysiaValidationError(error: unknown): boolean {
-	const parsed = parseErrorIfString(error);
-	if (!isObject(parsed)) return false;
-	return parsed.code === 'VALIDATION' || parsed.type === 'validation';
-}
-
-function extractValidationFields(error: unknown): Record<string, string[]> {
+function convertElysiaValidationErrors(
+	errors: Array<{ path: string; message: string; summary?: string }>,
+): Record<string, string> {
 	const fields: Record<string, string[]> = {};
-	if (!isObject(error)) return fields;
-	if (Array.isArray(error.errors)) {
-		for (const item of error.errors) {
-			if (!isObject(item) || !Array.isArray(item.path)) continue;
-			const path = item.path
-				.filter((p): p is string => typeof p === 'string' && Boolean(p))
-				.join('.');
-			if (!path) continue;
-			const message = typeof item.message === 'string' ? item.message : 'Validation failed';
-			fields[path] ??= [];
-			if (!fields[path].includes(message)) {
-				fields[path].push(message);
-			}
+	for (const item of errors) {
+		const path = item.path.replace(/^\//, '').replace(/\//g, '.');
+		if (!path) continue;
+		const message = item.summary || item.message || 'Validation failed';
+		fields[path] ??= [];
+		if (!fields[path].includes(message)) {
+			fields[path].push(message);
 		}
 	}
-	if (Object.keys(fields).length === 0 && typeof error.property === 'string') {
-		const property = error.property.replace(/^\//, '').replace(/\//g, '.');
-		if (property) {
-			fields[property] = [
-				typeof error.message === 'string' ? error.message : 'Validation failed',
-			];
-		}
-	}
-	return fields;
+	return Object.fromEntries(
+		Object.entries(fields).map(([key, value]) => [key, value.join(', ')]),
+	);
 }
 
 export function handleError(context: {
@@ -64,24 +27,27 @@ export function handleError(context: {
 	[key: string]: unknown;
 }) {
 	const { error, set, code } = context;
-	const normalizedError = normalizeError(error);
-	if (code === 400 && isObject(normalizedError)) {
-		const fields = extractValidationFields(normalizedError);
+	if (code === 'VALIDATION' && error instanceof ElysiaValidationError) {
 		set.status = 400;
+		const fields = convertElysiaValidationErrors(
+			error.all.map((error) => ({
+				path: error.path,
+				message: error.message,
+				summary: error.summary,
+			})),
+		);
 		return {
-			error: normalizedError,
-			code: 'VALIDATION_ERROR',
-			fields: Object.keys(fields).length ? fields : undefined,
+			error: { message: 'Validation failed', code: 'VALIDATION_ERROR', fields: fields },
 		};
 	}
-	if (isElysiaValidationError(normalizedError)) {
-		const fields = extractValidationFields(normalizedError);
-
+	if (error instanceof ZodError) {
 		set.status = 400;
 		return {
-			error: normalizedError,
-			code: 'VALIDATION_ERROR',
-			fields: Object.keys(fields).length ? fields : undefined,
+			error: {
+				message: 'Validation failed',
+				code: 'VALIDATION_ERROR',
+				fields: z.treeifyError(error),
+			},
 		};
 	}
 	if (error instanceof BaseApplicationError) {
@@ -90,28 +56,14 @@ export function handleError(context: {
 			error: {
 				message: error.message,
 				code: error.code,
-				fields:
-					error.constructor.name === 'ValidationError'
-						? (error as ValidationError).fields
-						: undefined,
 			},
-			code: error.code,
-		};
-	}
-	if (error instanceof Error) {
-		set.status = 500;
-		return {
-			error: {
-				message: error.message || 'Internal server error',
-			},
-			code: 'INTERNAL_SERVER_ERROR',
 		};
 	}
 	set.status = 500;
 	return {
 		error: {
 			message: 'Internal server error',
+			code: 'INTERNAL_SERVER_ERROR',
 		},
-		code: 'INTERNAL_SERVER_ERROR',
 	};
 }
