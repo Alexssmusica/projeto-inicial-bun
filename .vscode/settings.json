@@ -3,7 +3,7 @@
 	"editor.formatOnSave": true,
 	"editor.codeActionsOnSave": {
 		"source.organizeImports": "always",
-		"source.fixAll.biome": "explicit"
+		"source.fixAll.biome": "always"
 	},
 	"[javascript]": {
 		"editor.defaultFormatter": "biomejs.biome",

@@ -3,11 +3,11 @@ import { logger } from '../logs/logger';
 function getEnv(varName: string, isObrigatorio = false): string | undefined {
 	const envVar = Bun.env[varName];
 	if (isObrigatorio && !envVar) {
-        const erro = `Necessário criar variável ${varName} no arquivo .env`;
+		const erro = `Necessário criar variável ${varName} no arquivo .env`;
 		logger.error(erro);
 		throw new Error(erro);
 	}
-    if (!envVar) return undefined;
+	if (!envVar) return undefined;
 	return String(envVar);
 }
 
